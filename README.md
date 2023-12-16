@@ -1,2 +1,2 @@
 # azure-secrets-group-permissins
-Manage secrets access in Azure DevOps by users groups
+Manage secrets groups access in Azure DevOps
