@@ -1,0 +1,54 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+parameters:
+- name: organization
+  displayName: Your organization name
+  type: string
+  default: $(System.CollectionId)
+- name: projectName
+  displayName: Project name
+  type: string
+  default: $(System.TeamProject)
+- name: userEmail
+  displayName: Email of the user to add permissions to
+  type: string
+- name: variableGroup
+  displayName: Variable Group to change access. May be part of group name or even regexp
+  type: string
+  default: mockvaluetoescapeanyproblemsnoonenamegrouplikethat
+- name: permission
+  displayName: Permission Type
+  type: string
+  default: Reader
+  values:
+  - Reader
+  - User
+  - Administrator
+
+
+trigger:
+- test
+
+
+variables:
+- group: my-secrets
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+stages:
+- stage: first
+  jobs:
+  - job: first
+    steps:
+    - checkout: self
+      clean: "true"
+      fetchDepth: "1"
+    - script: |
+        export PAT_SECRET=$(my-secrets.my-token)
+        bash actions.sh $(parameters.organization) $(parameters.projectName) $(parameters.userEmail) $(parameters.variableGroup) $(parameters.permission)
+      displayName: 'Run the script'
+
